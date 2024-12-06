@@ -1,0 +1,77 @@
+{% load static %}   
+<!DOCTYPE html>   
+<html lang="en">   
+<head>   
+  <meta charset="UTF-8">   
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+  <title>Friends</title>   
+  <style>   
+    /* Add some Facebook-like styles */   
+    body {   
+      font-family: Arial, sans-serif;   
+      background-color: #f0f2f5;   
+    }   
+    .container {   
+      max-width: 800px;   
+      margin: 40px auto;   
+      padding: 20px;   
+      background-color: #fff;   
+      border: 1px solid #ddd;   
+      border-radius: 10px;   
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);   
+    }   
+    .friend-list {   
+      list-style: none;   
+      padding: 0;   
+      margin: 0;   
+    }   
+    .friend-list li {   
+      display: flex;   
+      align-items: center;   
+      padding: 10px;   
+      border-bottom: 1px solid #ddd;   
+    }   
+    .friend-list li:last-child {   
+      border-bottom: none;   
+    }   
+    .friend-picture {  
+        width: 30px;  
+        height: 30px;  
+        border-radius: 50%;  
+        object-fit: cover;  
+        border: 1px solid #ddd;  
+    } 
+    .friend-name {   
+      font-size: 18px;   
+      font-weight: bold;   
+    }   
+  </style>   
+</head>   
+<body>   
+   
+  <nav>   
+    <ul>   
+      <li><a href="{% url 'homepage' %}">Home</a></li>   
+      <li><a href="{% url 'search_users' %}">Search</a></li>   
+      <li><a href="{% url 'friends' %}">Friends</a></li>   
+      <li><a href="{% url 'logout' %}">Logout</a></li>   
+    </ul>   
+  </nav>   
+   
+  <div class="container">   
+    <h2>Friends</h2>   
+    <ul class="friend-list">   
+        {% for friend in friends %}  
+        <li>  
+         {% if friend.profile_picture %}  
+          <img class="friend-picture" src="{{ friend.profile_picture.url }}" alt="Profile Picture">  
+         {% else %}  
+          <img class="friend-picture" src="https://picsum.photos/50/50" alt="Default Profile Picture">  
+         {% endif %}  
+         <span class="friend-name">{{ friend.username }}</span>  
+        </li>  
+      {% endfor %}  
+    </ul>   
+  </div>   
+</body>   
+</html>

@@ -1,0 +1,339 @@
+{% load static %}  
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+   <meta charset="UTF-8">  
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+   <title>{{ user.first_name }}'s Profile</title>  
+   <style>  
+      body {  
+        background-color: #f0f2f5;  
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+        margin: 0;  
+        padding: 0;  
+      }  
+      .container {  
+        width: 80%;  
+        margin: 0 auto;  
+      }  
+      .profile-header {  
+        background-color: #ffffff;  
+        border-bottom: 1px solid #ddd;  
+        padding: 20px;  
+        display: flex;  
+        align-items: center;  
+        justify-content: space-between;  
+      }  
+      .profile-info {  
+        display: flex;  
+        align-items: center;  
+      }  
+      .profile-info img {  
+        width: 150px; /* Adjust the size as needed */  
+        height: 150px;  
+        border-radius: 50%; /* Makes the image circular */  
+        border: 2px solid #ddd;  
+        object-fit: cover; /* Ensures the image covers the circle without stretching */  
+      }  
+      .profile-info div {  
+        margin-left: 20px;  
+      }  
+      .profile-info h1 {  
+        margin: 0;  
+        font-size: 2rem;  
+      }  
+      .profile-info p {  
+        margin: 5px 0;  
+        font-size: 1rem;  
+        color: #555;  
+      }  
+      .profile-actions {  
+        display: flex;  
+        align-items: center;  
+      }  
+      .profile-actions button {  
+        padding: 10px 20px;  
+        margin: 0 5px;  
+        border: none;  
+        border-radius: 5px;  
+        background-color: #4267B2;  
+        color: white;  
+        font-size: 1rem;  
+        cursor: pointer;  
+      }  
+      .profile-actions button:hover {  
+        background-color: #365899;  
+      }  
+      .profile-content {  
+        background-color: #ffffff;  
+        border: 1px solid #ddd;  
+        padding: 20px;  
+        margin-top: 20px;  
+        border-radius: 10px;  
+      }  
+      .form-group {  
+        margin-bottom: 15px;  
+      }  
+      .form-group label {  
+        display: block;  
+        font-weight: bold;  
+        margin-bottom: 5px;  
+      }  
+      .form-group input, .form-group textarea {  
+        width: 100%;  
+        padding: 10px;  
+        margin: 5px 0;  
+        border: 1px solid #ccc;  
+        border-radius: 5px;  
+      }  
+      .form-group textarea {  
+        resize: vertical;  
+      }  
+      .profile-friends {  
+        background-color: #ffffff;  
+        border: 1px solid #ddd;  
+        padding: 20px;  
+        margin-top: 20px;  
+        border-radius: 10px;  
+      }  
+  
+      .friend-picture {  
+        width: 30px;  
+        height: 30px;  
+        border-radius: 50%;  
+        object-fit: cover;  
+        border: 1px solid #ddd;  
+      }  
+      .profile-footer {  
+        margin-top: 20px;  
+        text-align: center;  
+      }  
+      .profile-footer a {  
+        color: #1867c0;  
+        text-decoration: none;  
+        font-size: 1rem;  
+        margin: 0 10px;  
+      }  
+      .profile-footer a:hover {  
+        text-decoration: underline;  
+      }  
+  
+      nav {  
+        background-color: #4267B2;  
+        padding: 10px;  
+        display: flex;  
+        justify-content: space-between;  
+        align-items: center;  
+        position: fixed;  
+        top: 0;  
+        left: 0;  
+        width: 100%;  
+        z-index: 1000;  
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+      }  
+  
+      nav ul {  
+        list-style: none;  
+        margin: 0;  
+        padding: 0;  
+        display: flex;  
+      }  
+  
+      nav li {  
+        margin-right: 20px;  
+      }  
+  
+      nav a {  
+        color: #fff;  
+        text-decoration: none;  
+        font-size: 1rem;  
+        padding: 10px;  
+        border-radius: 5px;  
+        transition: background-color 0.2s ease;  
+      }  
+  
+      nav a:hover {  
+        background-color: #365899;  
+      }  
+  
+      nav a.active {  
+        background-color: #365899;  
+      }  
+  
+      .container {  
+        margin-top: 60px;  
+      }  
+  
+      .newsfeed {  
+        background-color: #ffffff;  
+        border: 1px solid #ddd;  
+        padding: 20px;  
+        margin-top: 20px;  
+        border-radius: 10px;  
+      }  
+  
+      .newsfeed-post {  
+        padding: 20px;  
+        border-bottom: 1px solid #ddd;  
+      }  
+  
+      .newsfeed-post:last-child {  
+        border-bottom: none;  
+      }  
+  
+      .newsfeed-post img {  
+        width: 50px;  
+        height: 50px;  
+        border-radius: 50%;  
+        object-fit: cover;  
+        border: 1px solid #ddd;  
+      }  
+  
+      .newsfeed-post .username {  
+        font-weight: bold;  
+        font-size: 1.2rem;  
+      }  
+  
+      .newsfeed-post .content {  
+        font-size: 1rem;  
+        color: #555;  
+      }  
+  
+      .newsfeed-post .timestamp {  
+        font-size: 0.8rem;  
+        color: #999;  
+      }  
+
+.profile-friends li span {  
+  display: flex;  
+  align-items: center;  
+}  
+ 
+.profile-friends li span a {  
+  margin-left: 10px;  
+}
+   </style>  
+</head>  
+<body>  
+   <nav>  
+      <ul>  
+        <li><a href="{% url 'homepage' %}">Home</a></li>  
+        <li><a href="{% url 'search_users' %}">Search</a></li>  
+        <li><a href="{% url 'friends' %}">Friends</a></li>  
+        <li><a href="{% url 'logout' %}">Logout</a></li>  
+      </ul>  
+   </nav>  
+  
+   <div class="container">  
+      <div class="profile-header">  
+        <div class="profile-info">  
+           {% if user.profile_picture %}  
+              <img src="{{ user.profile_picture.url }}" alt="Profile Picture">  
+           {% else %}  
+              <img src="https://picsum.photos/50/50" alt="Default Profile Picture">  
+           {% endif %}  
+           <div>  
+              <h1>{{ user.username }}</h1>  
+              <p>{{ user.bio }}</p>  
+              <p>Work: {{ user.work }}</p>  
+              <p>Education: {{ user.education }}</p>  
+              <p>Location: {{ user.location }}</p>  
+           </div>  
+        </div>  
+        <div class="profile-actions">  
+           <a href="{% url 'profile' %}?edit=true">  
+              <button>Edit Profile</button>  
+           </a>  
+        </div>  
+      </div>  
+      {% if edit %}  
+      <div class="profile-content">  
+        <form method="POST" enctype="multipart/form-data">  
+           <div class="form-group">  
+              <label for="profile_picture">Profile Picture:</label>  
+              <input type="file" id="profile_picture" name="profile_picture" accept="image/*">  
+           </div>  
+           <div class="form-group">  
+              <label for="bio">Bio:</label>  
+              <input type="text" id="bio" name="bio" value="{{ user.bio }}" placeholder="Bio">  
+           </div>  
+           <div class="form-group">  
+              <label for="work">Work:</label>  
+              <input type="text" id="work" name="work" value="{{ user.work }}" placeholder="Work">  
+           </div>  
+           <div class="form-group">  
+              <label for="education">Education:</label>  
+              <input type="text" id="education" name="education" value="{{ user.education }}" placeholder="Education">  
+           </div>  
+           <div class="form-group">  
+              <label for="location">Location:</label>  
+              <input type="text" id="location" name="location" value="{{ user.location }}" placeholder="Location">  
+           </div>  
+           <button type="submit">Save Changes</button>  
+        </form>  
+      </div>  
+      {% endif %}  
+  
+      <div class="newsfeed">  
+        <h2>Newsfeed</h2>  
+        {% for post in newsfeed_posts %}  
+        <div class="newsfeed-post">  
+           <img src="{% if post.user.profile_picture %}{{ post.user.profile_picture.url }}{% else %}https://picsum.photos/50/50{% endif %}" alt="Profile Picture">  
+           <span class="username">{{ post.user.username }}</span>  
+           <span class="content">{{ post.content }}</span>  
+           <span class="timestamp">{{ post.created_at }}</span>  
+        </div>  
+        {% empty %}  
+        <p>No posts available.</p>  
+        {% endfor %}  
+      </div>  
+  
+      <div class="profile-posts">  
+        <h2>Posts</h2>  
+        <form method="POST">  
+           <div class="form-group">  
+              <label for="post_content">Write a Post:</label>  
+              <textarea id="post_content" name="content" rows="4" placeholder="What's on your mind?"></textarea>  
+           </div>  
+           <button type="submit">Post</button>  
+        </form>  
+  
+        {% if posts %}  
+        <ul>  
+           {% for post in posts %}  
+           <li>  
+              <p>{{ post.content }}</p>  
+              <small>Posted on: {{ post.created_at }}</small>  
+           </li>  
+           {% endfor %}  
+        </ul>  
+        {% else %}  
+        <p>No posts available.</p>  
+        {% endif %}  
+      </div>  
+      <div class="profile-friends">  
+        <h2>Friends</h2>  
+        <ul>  
+           {% for friend in friends %}  
+           <li>  
+             {% if friend.profile_picture %}  
+             <img src="{{ friend.profile_picture.url }}" alt="Profile Picture" class="friend-picture">  
+             {% else %}  
+             <img src="https://picsum.photos/50/50" alt="Default Profile Picture" class="friend-picture">  
+             {% endif %}  
+             {{ friend.username }} <a href="{% url 'unfriend' friend.id %}" style="margin-left: 10px;">Unfriend</a>  
+           </li>  
+           {% empty %}  
+           <li>No friends yet.</li>  
+           {% endfor %}  
+        </ul>  
+     </div>
+      
+     </div>     
+      <div class="profile-footer">  
+        <a href="{% url 'homepage' %}">Back to Home</a><br>  
+        <a href="{% url 'logout' %}">Logout</a>  
+      </div> 
+   </div>  
+</body>  
+</html>
