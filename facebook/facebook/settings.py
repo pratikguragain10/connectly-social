@@ -22,8 +22,9 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1"
+    "localhost,127.0.0.1,facebook-clone-sx5w.onrender.com"
 ).split(",")
+
 
 # --------------------------------------------------
 # APPLICATIONS
@@ -56,6 +57,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 
 # --------------------------------------------------
 # URLS & WSGI
