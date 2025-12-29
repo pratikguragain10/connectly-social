@@ -25,7 +25,6 @@ ALLOWED_HOSTS = os.environ.get(
     "localhost,127.0.0.1,facebook-clone-sx5w.onrender.com"
 ).split(",")
 
-
 # --------------------------------------------------
 # APPLICATIONS
 # --------------------------------------------------
@@ -36,6 +35,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Cloudinary
+    'cloudinary',
+    'cloudinary_storage',
+
     'user',
 ]
 
@@ -45,25 +49,32 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# --------------------------------------------------
+# HTTPS & COOKIE SECURITY (RENDER SAFE)
+# --------------------------------------------------
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+
+# IMPORTANT: Avoid redirect loops on Render
+SECURE_SSL_REDIRECT = not DEBUG
 
 # --------------------------------------------------
 # URLS & WSGI
 # --------------------------------------------------
 ROOT_URLCONF = 'facebook.urls'
-
 WSGI_APPLICATION = 'facebook.wsgi.application'
 
 # --------------------------------------------------
@@ -86,7 +97,7 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# DATABASE (SQLite – OK for demo projects)
+# DATABASE (SQLite – OK for demo)
 # --------------------------------------------------
 DATABASES = {
     'default': {
@@ -99,43 +110,38 @@ DATABASES = {
 # PASSWORD VALIDATION
 # --------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # --------------------------------------------------
 # INTERNATIONALIZATION
 # --------------------------------------------------
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------
-# STATIC FILES (IMPORTANT FOR RENDER)
+# STATIC FILES (WhiteNoise)
 # --------------------------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+)
 
 # --------------------------------------------------
-# MEDIA FILES
+# MEDIA FILES (Cloudinary)
 # --------------------------------------------------
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = (
+    'cloudinary_storage.storage.MediaCloudinaryStorage'
+)
+
+MEDIA_URL = '/media/'  # Cloudinary overrides internally
 
 # --------------------------------------------------
 # EMAIL (DEV SAFE)
@@ -147,6 +153,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --------------------------------------------------
+# CSRF (RENDER DOMAIN)
+# --------------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
-    "https://facebook-clone-sx5w.onrender.com",
+    'https://facebook-clone-sx5w.onrender.com',
 ]
