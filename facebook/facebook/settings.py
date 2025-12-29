@@ -4,6 +4,9 @@ Django settings for facebook project.
 
 from pathlib import Path
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # --------------------------------------------------
 # BASE DIR
@@ -13,10 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 # SECURITY
 # --------------------------------------------------
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    "unsafe-secret-key-for-dev"
-)
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key")
 
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Cloudinary
     'cloudinary',
     'cloudinary_storage',
 
@@ -52,7 +51,6 @@ MIDDLEWARE = [
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,16 +58,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# --------------------------------------------------
-# HTTPS & COOKIE SECURITY (RENDER SAFE)
-# --------------------------------------------------
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-
-# IMPORTANT: Avoid redirect loops on Render
-SECURE_SSL_REDIRECT = not DEBUG
+SECURE_SSL_REDIRECT = True
 
 # --------------------------------------------------
 # URLS & WSGI
@@ -83,7 +75,6 @@ WSGI_APPLICATION = 'facebook.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,7 +88,7 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# DATABASE (SQLite – OK for demo)
+# DATABASE
 # --------------------------------------------------
 DATABASES = {
     'default': {
@@ -107,55 +98,38 @@ DATABASES = {
 }
 
 # --------------------------------------------------
-# PASSWORD VALIDATION
-# --------------------------------------------------
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-# --------------------------------------------------
-# INTERNATIONALIZATION
-# --------------------------------------------------
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-# --------------------------------------------------
-# STATIC FILES (WhiteNoise)
+# STATIC FILES
 # --------------------------------------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_STORAGE = (
-    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# --------------------------------------------------
+# CLOUDINARY (MEDIA)
+# --------------------------------------------------
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
 )
 
-# --------------------------------------------------
-# MEDIA FILES (Cloudinary)
-# --------------------------------------------------
-DEFAULT_FILE_STORAGE = (
-    'cloudinary_storage.storage.MediaCloudinaryStorage'
-)
-
-MEDIA_URL = '/media/'  # Cloudinary overrides internally
+MEDIA_URL = '/media/'  # kept for Django compatibility
 
 # --------------------------------------------------
-# EMAIL (DEV SAFE)
+# EMAIL
 # --------------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # --------------------------------------------------
-# DEFAULT PRIMARY KEY
+# DEFAULT PK
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --------------------------------------------------
-# CSRF (RENDER DOMAIN)
+# CSRF
 # --------------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
-    'https://facebook-clone-sx5w.onrender.com',
+    "https://facebook-clone-sx5w.onrender.com",
 ]

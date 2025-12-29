@@ -1,4 +1,6 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
+
 
 class User_Data(models.Model):
     username = models.CharField(max_length=100, unique=True)
@@ -9,14 +11,15 @@ class User_Data(models.Model):
 
     email = models.EmailField(unique=True)
 
-    profile_picture = models.ImageField(
-        upload_to='profile_pictures/',
+    # ✅ Cloudinary fields
+    profile_picture = CloudinaryField(
+        'image',
         blank=True,
         null=True
     )
 
-    cover_photo = models.ImageField(
-        upload_to='cover_photos/',
+    cover_photo = CloudinaryField(
+        'image',
         blank=True,
         null=True
     )
@@ -38,17 +41,23 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name='posts'
     )
+
     content = models.TextField(blank=True)
-    image = models.ImageField(
-        upload_to='posts/images/',
+
+    # ✅ Cloudinary image
+    image = CloudinaryField(
+        'image',
         blank=True,
         null=True
     )
-    video = models.FileField(
-        upload_to='posts/videos/',
+
+    # ✅ Cloudinary video
+    video = CloudinaryField(
+        'video',
         blank=True,
         null=True
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -71,11 +80,13 @@ class Friend(models.Model):
         on_delete=models.CASCADE,
         related_name='received_requests'
     )
+
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
         default='pending'
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -96,6 +107,7 @@ class Like(models.Model):
         on_delete=models.CASCADE,
         related_name='likes'
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -116,6 +128,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
+
     content = models.TextField()
 
     parent = models.ForeignKey(
@@ -123,14 +136,15 @@ class Comment(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name='children'   
+        related_name='children'
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Comment by {self.user.username}"
-      
+
+
 class CommentLike(models.Model):
     user = models.ForeignKey(
         User_Data,
@@ -142,8 +156,8 @@ class CommentLike(models.Model):
         on_delete=models.CASCADE,
         related_name='likes'
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'comment')
-
