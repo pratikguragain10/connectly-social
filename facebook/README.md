@@ -42,7 +42,7 @@ It supports user profiles, posts with media, friendships, and interactive social
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 facebook/
