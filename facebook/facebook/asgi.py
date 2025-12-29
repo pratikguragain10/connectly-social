@@ -1,5 +1,5 @@
 """
-ASGI config for facebook project.
+ASGI config for facebook clone project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

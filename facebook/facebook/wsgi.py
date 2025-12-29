@@ -1,5 +1,5 @@
 """
-WSGI config for facebook project.
+WSGI config for facebook clone project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
