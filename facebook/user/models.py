@@ -11,15 +11,14 @@ class User_Data(models.Model):
 
     email = models.EmailField(unique=True)
 
-    # ✅ Cloudinary fields
     profile_picture = CloudinaryField(
-        'image',
+        'profile_picture',
         blank=True,
         null=True
     )
 
     cover_photo = CloudinaryField(
-        'image',
+        'cover_photo',
         blank=True,
         null=True
     )
@@ -41,21 +40,19 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name='posts'
     )
-
     content = models.TextField(blank=True)
 
-    # ✅ Cloudinary image
     image = CloudinaryField(
-        'image',
+        'post_image',
         blank=True,
         null=True
     )
 
-    # ✅ Cloudinary video
     video = CloudinaryField(
-        'video',
+        'post_video',
         blank=True,
-        null=True
+        null=True,
+        resource_type='video'
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
