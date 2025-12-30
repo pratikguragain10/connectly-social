@@ -155,7 +155,6 @@ def edit_profile(request):
     user = User_Data.objects.get(id=request.session['user_id'])
 
     if request.method == 'POST':
-
         if request.FILES.get('profile_picture'):
             user.profile_picture = request.FILES['profile_picture']
 
