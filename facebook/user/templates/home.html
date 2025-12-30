@@ -240,11 +240,17 @@ body {
   .home-layout { grid-template-columns: 1fr; }
   .right-sidebar { display:none; }
 }
-/* ================= POST HEADER FIX ================= */
+
+/* ================= POST HEADER ================= */
 .post-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* ================= POST MENU CONTAINER ================= */
+.post-menu {
+  position: relative;
 }
 
 /* ================= POST MENU BUTTON ================= */
@@ -265,26 +271,48 @@ body {
   background: #e4e6eb;
 }
 
-/* ================= POST MENU CONTAINER FIX ================= */
-.post-menu {
-  position: relative;
+/* ================= POST MENU DROPDOWN ================= */
+.post-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.18);
+  width: 200px;
+  display: none;
+  z-index: 50;
+  padding: 6px;
 }
 
-/* ================= POST MENU ITEM FIX ================= */
+/* ================= MENU ITEMS (FINAL FIX) ================= */
 .post-menu-dropdown a,
-.post-menu-dropdown button {
-  color: #050505;          /* Facebook-like dark text */
-  text-decoration: none;  /* remove underline */
-  font-weight: 500;
-}
-
-.post-menu-dropdown a:hover,
-.post-menu-dropdown button:hover {
-  background: #f0f2f5;
+.post-menu-dropdown form button {
+  all: unset;                  /* 🔥 removes blue link + borders */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
   color: #050505;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* ================= POST META SPACING FIX ================= */
+/* Hover */
+.post-menu-dropdown a:hover,
+.post-menu-dropdown form button:hover {
+  background: #f0f2f5;
+}
+
+/* Delete action (Facebook-like red) */
+.post-menu-dropdown form button {
+  color: #e11d48;
+}
+
+/* ================= POST META SPACING ================= */
 .post-user small {
   display: block;
   margin-top: 4px;
@@ -293,22 +321,9 @@ body {
 }
 
 .post-text {
-  margin-top: 8px;      /* key fix */
+  margin-top: 8px;
   font-size: 15px;
   line-height: 1.5;
-}
-
-/* ================= POST MENU DROPDOWN ================= */
-.post-menu-dropdown {
-  position: absolute;
-  right: 0;
-  top: 44px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(0,0,0,.18);
-  width: 180px;
-  display: none;
-  z-index: 50;
 }
 
 /* ================= MEDIA PREVIEW ================= */
@@ -324,7 +339,7 @@ body {
   border-radius: 16px;
 }
 
-/* HIDE CLOSE BUTTON BY DEFAULT */
+/* ================= PREVIEW CLOSE BUTTON ================= */
 .preview-close {
   position: absolute;
   top: 10px;
@@ -337,7 +352,7 @@ body {
   border-radius: 50%;
   font-size: 16px;
   cursor: pointer;
-  display: none;   /* FIX */
+  display: none;
   align-items: center;
   justify-content: center;
 }
@@ -359,6 +374,7 @@ body {
 .create-post-actions label:hover {
   background: #f0f2f5;
 }
+
 </style>
 
 <div class="home-layout">
