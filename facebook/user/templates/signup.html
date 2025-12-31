@@ -153,6 +153,38 @@ button:hover {
 }
 .message.error { color: #dc2626; }
 .message.success { color: #16a34a; }
+
+/* Logo container */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Circle logo */
+.logo-circle {
+  width: 40px;
+  height: 40px;
+  background: #0866ff;
+  color: white;
+  font-size: 26px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* Brand text */
+.brand-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
 </style>
 </head>
 
@@ -160,10 +192,10 @@ button:hover {
 
 <div class="container">
 
-  <!-- Logo -->
-  <div class="logo">
-    <strong>Connectly</strong>
-  </div>
+<div class="logo-wrap">
+  <div class="logo-circle">C</div>
+  <strong class="brand-name">Connectly</strong>
+</div>
 
   <h2>Create Account</h2>
   <div class="divider"></div>
