@@ -32,7 +32,7 @@ body {
   background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
 }
 
-/* Edit cover button */
+/* Edit cover button (Facebook style) */
 .cover-edit-btn {
   position: absolute;
   right: 16px;
@@ -47,7 +47,6 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  text-decoration: none;
   backdrop-filter: blur(4px);
 }
 
@@ -59,7 +58,7 @@ body {
   position: relative;
 }
 
-/* Bottom white section */
+/* Bottom white section with avatar, name, buttons */
 .profile-bottom {
   background: white;
   border-radius: 8px 8px 0 0;
@@ -67,9 +66,6 @@ body {
   margin-top: -80px;
   position: relative;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
 }
 
 /* Avatar */
@@ -91,11 +87,10 @@ body {
   object-fit: cover;
 }
 
-/* Name and friends info */
+/* Name and friends */
 .profile-info {
   margin-left: 200px;
   padding-top: 40px;
-  flex-grow: 1;
 }
 
 .profile-info h1 {
@@ -107,11 +102,9 @@ body {
 .profile-info span {
   font-size: 15px;
   color: #65676b;
-  display: block;
-  margin-top: 4px;
 }
 
-/* Edit profile button (Facebook blue) */
+/* Edit button (Facebook blue) */
 .edit-btn {
   background: #1877f2;
   color: white;
@@ -124,8 +117,6 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  align-self: flex-end;
-  margin-bottom: 8px;
 }
 
 /* Body layout */
@@ -138,7 +129,7 @@ body {
   padding: 0 16px;
 }
 
-/* Cards */
+/* Left sidebar cards */
 .card {
   background: white;
   border-radius: 8px;
@@ -152,14 +143,13 @@ body {
   font-weight: 600;
   font-size: 17px;
   border-bottom: 1px solid #e4e6eb;
-  background: #fff;
 }
 
 .card-body {
   padding: 12px 16px;
 }
 
-/* Intro items */
+/* Intro */
 .intro-item {
   display: flex;
   align-items: center;
@@ -204,7 +194,7 @@ body {
   color: #65676b;
 }
 
-/* Post cards */
+/* Posts */
 .post-card {
   background: white;
   border-radius: 8px;
@@ -223,7 +213,6 @@ body {
 .post-user {
   display: flex;
   gap: 12px;
-  align-items: center;
 }
 
 .post-user img {
@@ -235,7 +224,6 @@ body {
 .post-user-info strong {
   display: block;
   font-size: 15px;
-  font-weight: 600;
 }
 
 .post-user-info small {
@@ -256,17 +244,13 @@ body {
 .post-content {
   padding: 0 16px 12px;
   font-size: 15px;
-  line-height: 1.4;
-  white-space: pre-wrap;
-}
-
-.post-media {
-  margin-top: 8px;
 }
 
 .post-media img,
 .post-media video {
   width: 100%;
+  max-height: 600px;
+  object-fit: contain;
   background: black;
 }
 
@@ -299,40 +283,17 @@ body {
   color: #1877f2 !important;
 }
 
-/* Create post card */
-.create-post-card textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: none;
-  font-size: 15px;
-  resize: none;
-  background: transparent;
-}
-
-.create-post-card .bottom-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  border-top: 1px solid #e4e6eb;
-}
-
-/* Mobile */
+/* Mobile adjustments */
 @media (max-width: 900px) {
   .profile-body {
     grid-template-columns: 1fr;
   }
+
   .profile-info {
     margin-left: 0;
     text-align: center;
   }
-  .profile-bottom {
-    flex-direction: column;
-    align-items: center;
-  }
-  .edit-btn {
-    margin-top: 16px;
-  }
+
   .profile-avatar {
     left: 50%;
     transform: translateX(-50%);
@@ -341,194 +302,213 @@ body {
 </style>
 
 <div class="profile-page">
+<!-- COVER -->
+<div class="profile-cover"
+ style="background-image:url('{% if user.cover_photo %}{{ user.cover_photo.url }}{% else %}https://picsum.photos/1200/350{% endif %}')">
+  {% if user.id == request.session.user_id %}
+    <a href="{% url 'edit_profile' %}" class="cover-edit-btn">📷 Edit cover photo</a>
+  {% endif %}
+</div>
 
-  <!-- Cover -->
-  <div class="profile-cover" style="background-image: url('{% if user.cover_photo %}{{ user.cover_photo.url }}{% else %}https://picsum.photos/1200/350{% endif %}');">
+<!-- HEADER -->
+<div class="profile-header">
+  <div class="profile-bottom">
+  <div class="profile-avatar">
+    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://picsum.photos/200{% endif %}">
+  </div>
+
+  <div class="profile-info">
+
+      <h1>{{ user.username }}</h1>
+      <span>{{ friends|length }} friends</span>
+    </div>
+
     {% if user.id == request.session.user_id %}
-      <a href="{% url 'edit_profile' %}" class="cover-edit-btn">📷 Edit cover photo</a>
+      <a href="{% url 'edit_profile' %}">
+        <button class="btn">✏️ Edit profile</button>
+      </a>
+    {% endif %}
+  </div>
+</div>
+</div>
+
+<!-- BODY -->
+<div class="profile-body">
+
+  <!-- LEFT -->
+  <aside class="profile-left">
+    <div class="card">
+      <h3>Intro</h3>
+      <p>{{ user.bio }}</p>
+      <p>💼 {{ user.work }}</p>
+      <p>🎓 {{ user.education }}</p>
+      <p>📍 {{ user.location }}</p>
+    </div>
+
+    <div class="card">
+      <h3>Photos</h3>
+      <div class="photos-grid">
+        {% for photo in photos|slice:":6" %}
+          <img src="{{ photo.image.url }}">
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Friends</h3>
+      <div class="friends-grid">
+        {% for friend in friends|slice:":6" %}
+          <div class="friend-item">
+            <img src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://picsum.photos/200{% endif %}">
+            <span>{{ friend.username }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <!-- POSTS -->
+  <main>
+
+    {% if user.id == request.session.user_id %}
+    <div class="card">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'profile' %}">
+        {% csrf_token %}
+
+        <textarea name="content" rows="2"
+          placeholder="What's on your mind, {{ user.username }}?"
+          style="width:100%;border-radius:20px;padding:10px;border:none;background:#f0f2f5;"></textarea>
+
+        <!-- MEDIA PREVIEW -->
+<div class="create-post-preview preview-wrapper" id="postPreview">
+  <button type="button" class="preview-close" onclick="clearHomePreview()">✕</button>
+  <img id="imagePreview" style="display:none;">
+  <video id="videoPreview" controls style="display:none;"></video>
+</div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:10px;">
+          <label>📷 Photo
+            <input type="file" name="image" accept="image/*"
+                   onchange="previewProfileImage(this)" hidden>
+          </label>
+
+          <label>🎥 Video
+            <input type="file" name="video" accept="video/*"
+                   onchange="previewProfileVideo(this)" hidden>
+          </label>
+
+          <button type="submit" class="btn">Post</button>
+        </div>
+      </form>
+    </div>
+    {% endif %}
+
+    {% for post in posts %}
+<div class="card">
+
+  <!-- POST HEADER -->
+  <div class="post-top">
+    <div class="post-header">
+      <img src="{% if post.user.profile_picture %}{{ post.user.profile_picture.url }}{% else %}https://picsum.photos/40{% endif %}">
+      <div>
+        <strong>{{ post.user.username }}</strong><br>
+        <small>{{ post.created_at|date:"M d, Y H:i" }}</small>
+      </div>
+    </div>
+
+    {% if post.user.id == request.session.user_id %}
+    <div class="post-menu">
+      <button class="post-menu-btn" onclick="togglePostMenu({{ post.id }})">⋯</button>
+      <div class="post-menu-dropdown" id="post-menu-{{ post.id }}">
+        <a href="{% url 'edit_post' post.id %}">✏️ Edit post</a>
+        <form method="POST" action="{% url 'delete_post' post.id %}">
+          {% csrf_token %}
+          <button>🗑 Delete post</button>
+        </form>
+      </div>
+    </div>
     {% endif %}
   </div>
 
-  <!-- Header Bottom -->
-  <div class="profile-header">
-    <div class="profile-bottom">
-      <div class="profile-avatar">
-        <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://picsum.photos/200{% endif %}">
-      </div>
-
-      <div class="profile-info">
-        <h1>{{ user.username }}</h1>
-        <span>{{ friends|length }} friend{% if friends|length != 1 %}s{% endif %}</span>
-      </div>
-
-      {% if user.id == request.session.user_id %}
-        <button class="edit-btn" onclick="location.href='{% url 'edit_profile' %}'">✏️ Edit profile</button>
-      {% endif %}
+  <!-- POST CONTENT -->
+  {% if post.content %}<p>{{ post.content }}</p>{% endif %}
+  {% if post.image %}
+    <div class="post-media">
+      <img src="{{ post.image.url }}">
     </div>
+  {% endif %}
+  {% if post.video %}
+    <div class="post-media">
+      <video controls src="{{ post.video.url }}"></video>
+    </div>
+  {% endif %}
+
+  <!-- POST ACTIONS -->
+  <div class="post-actions">
+    <form method="POST" action="{% url 'like_post' post.id %}">
+      {% csrf_token %}
+      <button class="{% if post.is_liked %}liked{% endif %}">
+        👍 Like
+      </button>
+    </form>
+
+    <button onclick="toggleComments(this)">💬 Comment</button>
   </div>
 
-  <!-- Body -->
-  <div class="profile-body">
+  <!-- COMMENTS -->
+  <div class="comment-box" style="display:none;">
 
-    <!-- Left Sidebar -->
-    <aside>
-      <!-- Intro -->
-      <div class="card">
-        <div class="card-header">Intro</div>
-        <div class="card-body">
-          {% if user.bio %}
-            <p style="margin: 0 0 16px; font-size: 15px;">{{ user.bio }}</p>
-          {% endif %}
-          {% if user.work %}<div class="intro-item">💼 {{ user.work }}</div>{% endif %}
-          {% if user.education %}<div class="intro-item">🎓 {{ user.education }}</div>{% endif %}
-          {% if user.location %}<div class="intro-item">📍 {{ user.location }}</div>{% endif %}
-        </div>
+    <!-- ADD COMMENT -->
+    <form method="POST" action="{% url 'add_comment' post.id %}">
+      {% csrf_token %}
+      <input class="comment-input" name="content"
+             placeholder="Write a comment..." required>
+    </form>
+
+    <!-- LIST COMMENTS -->
+    {% for comment in post.comments.all %}
+    {% if not comment.parent %}
+    <div class="comment">
+      <strong>{{ comment.user.username }}</strong>
+      {{ comment.content }}
+
+      <div class="comment-actions">
+        <form method="POST" action="{% url 'like_comment' comment.id %}">
+          {% csrf_token %}
+          <button>👍 {{ comment.likes.count }}</button>
+        </form>
+        <button onclick="toggleReply(this)">Reply</button>
       </div>
 
-      <!-- Photos -->
-      <div class="card">
-        <div class="card-header">Photos</div>
-        <div class="card-body" style="padding:0;">
-          <div class="photos-grid">
-            {% for photo in photos|slice:":9" %}
-              <img src="{{ photo.image.url }}">
-            {% empty %}
-              <!-- Placeholder if no photos -->
-            {% endfor %}
-          </div>
-        </div>
+      <!-- REPLY BOX -->
+      <div class="reply" style="display:none;">
+        <form method="POST" action="{% url 'add_comment' post.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="parent" value="{{ comment.id }}">
+          <input class="comment-input"
+                 name="content"
+                 placeholder="Write a reply..." required>
+        </form>
       </div>
 
-      <!-- Friends -->
-      <div class="card">
-        <div class="card-header">Friends</div>
-        <div class="card-body">
-          <div class="friends-grid">
-            {% for friend in friends|slice:":9" %}
-              <div class="friend-item">
-                <img src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://picsum.photos/seed/{{ friend.id }}/100{% endif %}">
-                <span>{{ friend.username }}</span>
-              </div>
-            {% empty %}
-              <span style="color:#65676b;">No friends to show</span>
-            {% endfor %}
-          </div>
-        </div>
+      <!-- REPLIES -->
+      {% for reply in comment.children.all %}
+      <div class="comment reply">
+        <strong>{{ reply.user.username }}</strong>
+        {{ reply.content }}
       </div>
-    </aside>
-
-    <!-- Posts -->
-    <main>
-      {% if user.id == request.session.user_id %}
-        <div class="card post-card create-post-card">
-          <form method="POST" enctype="multipart/form-data" action="{% url 'profile' %}">
-            {% csrf_token %}
-            <textarea name="content" rows="3" placeholder="What's on your mind, {{ user.username }}?"></textarea>
-
-            <!-- Media Preview -->
-            <div class="create-post-preview" id="postPreview" style="padding: 0 16px; display: none;">
-              <button type="button" class="preview-close" onclick="clearHomePreview()" style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.6); color:white; border:none; border-radius:50%; width:28px; height:28px;">✕</button>
-              <img id="imagePreview" style="max-height:400px; width:100%; border-radius:8px;">
-              <video id="videoPreview" controls style="max-height:400px; width:100%; border-radius:8px;"></video>
-            </div>
-
-            <div class="bottom-bar">
-              <div>
-                <label style="cursor:pointer; color:#65676b; padding:8px;">📷 Photo
-                  <input type="file" name="image" accept="image/*" onchange="previewProfileImage(this)" hidden>
-                </label>
-                <label style="cursor:pointer; color:#65676b; padding:8px;">🎥 Video
-                  <input type="file" name="video" accept="video/*" onchange="previewProfileVideo(this)" hidden>
-                </label>
-              </div>
-              <button type="submit" style="background:#1877f2; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:700;">Post</button>
-            </div>
-          </form>
-        </div>
-      {% endif %}
-
-      {% for post in posts %}
-        <div class="post-card">
-          <div class="post-header">
-            <div class="post-user">
-              <img src="{% if post.user.profile_picture %}{{ post.user.profile_picture.url }}{% else %}https://picsum.photos/40{% endif %}">
-              <div class="post-user-info">
-                <strong>{{ post.user.username }}</strong>
-                <small>{{ post.created_at|date:"M d" }} at {{ post.created_at|time:"g:i A" }}</small>
-              </div>
-            </div>
-
-            {% if post.user.id == request.session.user_id %}
-              <button class="post-menu-btn" onclick="togglePostMenu({{ post.id }})">⋯</button>
-              <div class="post-menu-dropdown" id="post-menu-{{ post.id }}" style="display:none; position:absolute; right:16px; top:50px; background:white; border:1px solid #ccd0d5; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:10;">
-                <a href="{% url 'edit_post' post.id %}" style="display:block; padding:8px 16px; text-decoration:none; color:#1c1e21;">✏️ Edit post</a>
-                <form method="POST" action="{% url 'delete_post' post.id %}" style="margin:0;">
-                  {% csrf_token %}
-                  <button type="submit" style="width:100%; text-align:left; background:none; border:none; padding:8px 16px; color:#e74c3c; cursor:pointer;">🗑 Delete post</button>
-                </form>
-              </div>
-            {% endif %}
-          </div>
-
-          {% if post.content %}
-            <div class="post-content">{{ post.content }}</div>
-          {% endif %}
-
-          {% if post.image %}
-            <div class="post-media"><img src="{{ post.image.url }}"></div>
-          {% endif %}
-          {% if post.video %}
-            <div class="post-media"><video controls><source src="{{ post.video.url }}"></video></div>
-          {% endif %}
-
-          <div class="post-actions">
-            <form method="POST" action="{% url 'like_post' post.id %}">
-              {% csrf_token %}
-              <button type="submit" class="{% if post.is_liked %}liked{% endif %}">👍 Like</button>
-            </form>
-            <button onclick="toggleComments(this)">💬 Comment</button>
-          </div>
-
-          <!-- Comments -->
-          <div class="comment-box" style="display:none; padding: 0 16px 12px;">
-            <form method="POST" action="{% url 'add_comment' post.id %}">
-              {% csrf_token %}
-              <input type="text" name="content" placeholder="Write a comment..." style="width:100%; padding:8px 12px; border-radius:24px; border:none; background:#f0f2f5; margin-top:8px;" required>
-            </form>
-
-            {% for comment in post.comments.all %}
-              {% if not comment.parent %}
-                <div style="margin-top:12px; font-size:14px;">
-                  <strong>{{ comment.user.username }}</strong> {{ comment.content }}
-                  <div style="color:#65676b; font-size:12px; margin-top:4px;">
-                    <form method="POST" action="{% url 'like_comment' comment.id %}" style="display:inline;">
-                      {% csrf_token %}
-                      <button type="submit" style="background:none; border:none; color:#65676b; cursor:pointer;">Like ({{ comment.likes.count }})</button>
-                    </form>
-                    <button onclick="toggleReply(this)" style="background:none; border:none; color:#65676b; cursor:pointer; margin-left:12px;">Reply</button>
-                  </div>
-
-                  <div style="display:none; margin-top:8px;" class="reply-form">
-                    <form method="POST" action="{% url 'add_comment' post.id %}">
-                      {% csrf_token %}
-                      <input type="hidden" name="parent" value="{{ comment.id }}">
-                      <input type="text" name="content" placeholder="Write a reply..." style="width:100%; padding:8px 12px; border-radius:24px; border:none; background:#f0f2f5;" required>
-                    </form>
-                  </div>
-
-                  {% for reply in comment.children.all %}
-                    <div style="margin-left:32px; margin-top:8px; font-size:14px;">
-                      <strong>{{ reply.user.username }}</strong> {{ reply.content }}
-                    </div>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            {% endfor %}
-          </div>
-        </div>
       {% endfor %}
-    </main>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+
   </div>
+
+</div>
+{% endfor %}
+  </main>
+
 </div>
 
 <script>
@@ -540,56 +520,71 @@ function togglePostMenu(id) {
   menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 }
 
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.post-menu-btn') && !e.target.closest('.post-menu-dropdown')) {
-    document.querySelectorAll('.post-menu-dropdown').forEach(m => m.style.display = 'none');
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.post-menu')) {
+    document.querySelectorAll('.post-menu-dropdown')
+      .forEach(m => m.style.display = 'none');
   }
 });
 
-function previewProfileImage(input) {
+/* ===== PROFILE MEDIA PREVIEW ===== */
+function previewProfileImage(input){
   const file = input.files[0];
   if (!file) return;
+
   const img = document.getElementById('imagePreview');
   const video = document.getElementById('videoPreview');
   const box = document.getElementById('postPreview');
+  const closeBtn = box.querySelector('.preview-close');
+
   img.src = URL.createObjectURL(file);
   img.style.display = 'block';
   video.style.display = 'none';
   box.style.display = 'block';
+  closeBtn.style.display = 'flex';
 }
 
-function previewProfileVideo(input) {
+function previewProfileVideo(input){
   const file = input.files[0];
   if (!file) return;
+
   const img = document.getElementById('imagePreview');
   const video = document.getElementById('videoPreview');
   const box = document.getElementById('postPreview');
+  const closeBtn = box.querySelector('.preview-close');
+
   video.src = URL.createObjectURL(file);
   video.style.display = 'block';
   img.style.display = 'none';
   box.style.display = 'block';
+  closeBtn.style.display = 'flex';
 }
 
-function clearHomePreview() {
+/* CLEAR PREVIEW */
+function clearHomePreview(){
   const box = document.getElementById('postPreview');
   const img = document.getElementById('imagePreview');
   const video = document.getElementById('videoPreview');
+
   box.style.display = 'none';
-  img.src = ''; video.src = '';
-  img.style.display = 'none'; video.style.display = 'none';
+  img.src = '';
+  video.src = '';
+  img.style.display = 'none';
+  video.style.display = 'none';
+
   box.closest('form').querySelector('input[name="image"]').value = '';
   box.closest('form').querySelector('input[name="video"]').value = '';
 }
 
-function toggleComments(btn) {
-  const card = btn.closest('.post-card');
+function toggleComments(btn){
+  const card = btn.closest('.card');
   const box = card.querySelector('.comment-box');
   box.style.display = box.style.display === 'block' ? 'none' : 'block';
 }
 
-function toggleReply(btn) {
-  const replyForm = btn.closest('div').nextElementSibling;
-  replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
+function toggleReply(btn){
+  const replyBox = btn.parentElement.nextElementSibling;
+  replyBox.style.display = replyBox.style.display === 'block' ? 'none' : 'block';
 }
 </script>
 
