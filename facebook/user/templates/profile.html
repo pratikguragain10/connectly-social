@@ -38,19 +38,27 @@ body {
 /* Edit cover button */
 .cover-edit-btn {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
-  background: #ffffff;
-  border: 1px solid #ccd0d5;
-  padding: 8px 12px;
-  border-radius: 6px;
+  right: 20px;
+  bottom: 20px;
+  background: rgba(255,255,255,.92);
+  color: #111827;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 14px;
   display: flex;
   gap: 6px;
   align-items: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
   z-index: 2;
+  text-decoration: none;
 }
+
+.cover-edit-btn:hover {
+  background: white;
+}
+
 
 /* ================= HEADER ================= */
 .profile-header {
@@ -110,7 +118,6 @@ body {
 
 /* Edit profile button */
 .btn {
-  margin-left: auto;
   background: #1877f2;
   color: white;
   border: none;
@@ -240,15 +247,109 @@ body {
     text-align: center;
   }
 
-  .btn {
-    margin-left: 0;
-    margin-top: 10px;
-  }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 
   .profile-avatar {
     margin-top: -80px;
   }
 }
+
+.create-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.create-post-actions label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #374151;
+}
+
+.create-post-actions .btn {
+  margin-left: auto;
+}
+
+.preview-wrapper {
+  display: none;
+  position: relative;
+  margin-top: 12px;
+}
+
+.preview-wrapper.active {
+  display: block;
+}
+
+.preview-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.post-menu {
+  position: relative;
+}
+
+.post-menu-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 36px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.post-menu-dropdown a,
+.post-menu-dropdown button {
+  display: block;
+  padding: 10px 14px;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.post-menu-dropdown a:hover,
+.post-menu-dropdown button:hover {
+  background: #f3f4f6;
+}
+
+.post-menu-dropdown.active {
+  display: block;
+}
+
+.create-post-textarea {
+  width: 100%;
+  border-radius: 20px;
+  padding: 12px;
+  border: none;
+  background: #f0f2f5;
+  resize: none;
+  font-size: 15px;
+}
+
 </style>
 
 
@@ -275,9 +376,7 @@ body {
     </div>
 
     {% if user.id == request.session.user_id %}
-      <a href="{% url 'edit_profile' %}">
-        <button class="btn">✏️ Edit profile</button>
-      </a>
+      <a href="{% url 'edit_profile' %}" class="btn">✏️ Edit profile</a>
     {% endif %}
   </div>
 </div>
@@ -326,9 +425,13 @@ body {
       <form method="POST" enctype="multipart/form-data" action="{% url 'profile' %}">
         {% csrf_token %}
 
-        <textarea name="content" rows="2"
-          placeholder="What's on your mind, {{ user.username }}?"
-          style="width:100%;border-radius:20px;padding:10px;border:none;background:#f0f2f5;"></textarea>
+        <textarea
+  name="content"
+  rows="2"
+  class="create-post-textarea"
+  placeholder="What's on your mind, {{ user.username }}?">
+</textarea>
+
 
         <!-- MEDIA PREVIEW -->
 <div class="create-post-preview preview-wrapper" id="postPreview">
@@ -337,7 +440,7 @@ body {
   <video id="videoPreview" controls style="display:none;"></video>
 </div>
 
-        <div style="display:flex;justify-content:space-between;margin-top:10px;">
+        <div class="create-post-actions">
           <label>📷 Photo
             <input type="file" name="image" accept="image/*"
                    onchange="previewProfileImage(this)" hidden>
@@ -463,61 +566,69 @@ body {
 </div>
 
 <script>
+
+function previewProfileImage(input){
+  previewImage(input);
+}
+
+function previewProfileVideo(input){
+  previewVideo(input);
+}
+
 function togglePostMenu(id) {
   const menu = document.getElementById('post-menu-' + id);
+
   document.querySelectorAll('.post-menu-dropdown').forEach(m => {
-    if (m !== menu) m.style.display = 'none';
+    if (m !== menu) m.classList.remove('active');
   });
-  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+
+  menu.classList.toggle('active');
 }
 
 document.addEventListener('click', function(e){
   if (!e.target.closest('.post-menu')) {
     document.querySelectorAll('.post-menu-dropdown')
-      .forEach(m => m.style.display = 'none');
+      .forEach(m => m.classList.remove('active'));
   }
 });
 
 /* ===== PROFILE MEDIA PREVIEW ===== */
-function previewProfileImage(input){
+function previewImage(input){
   const file = input.files[0];
-  if (!file) return;
+  if(!file) return;
 
+  const box = document.getElementById('postPreview');
   const img = document.getElementById('imagePreview');
   const video = document.getElementById('videoPreview');
-  const box = document.getElementById('postPreview');
-  const closeBtn = box.querySelector('.preview-close');
 
   img.src = URL.createObjectURL(file);
   img.style.display = 'block';
   video.style.display = 'none';
-  box.style.display = 'block';
-  closeBtn.style.display = 'flex';
+
+  box.classList.add('active');
 }
 
-function previewProfileVideo(input){
+function previewVideo(input){
   const file = input.files[0];
-  if (!file) return;
+  if(!file) return;
 
+  const box = document.getElementById('postPreview');
   const img = document.getElementById('imagePreview');
   const video = document.getElementById('videoPreview');
-  const box = document.getElementById('postPreview');
-  const closeBtn = box.querySelector('.preview-close');
 
   video.src = URL.createObjectURL(file);
   video.style.display = 'block';
   img.style.display = 'none';
-  box.style.display = 'block';
-  closeBtn.style.display = 'flex';
+
+  box.classList.add('active');
 }
 
-/* CLEAR PREVIEW */
 function clearHomePreview(){
   const box = document.getElementById('postPreview');
   const img = document.getElementById('imagePreview');
   const video = document.getElementById('videoPreview');
 
-  box.style.display = 'none';
+  box.classList.remove('active');
   img.src = '';
   video.src = '';
   img.style.display = 'none';
