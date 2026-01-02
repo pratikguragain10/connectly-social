@@ -265,7 +265,9 @@
   }
 </style>
 
-<div class="profile-cover" style="background-image:url('{% if user.cover_photo %}{{ user.cover_photo.url }}{% else %}https://picsum.photos/1200/350{% endif %}')">
+<div class="profile-cover" 
+style="background-image:url('{% if user.cover_photo %}{{ user.cover_photo.url }}
+{% else %}https://picsum.photos/1200/350{% endif %}')">
   {% if user.id == request.session.user_id %}
     <a href="{% url 'edit_profile' %}" class="cover-edit-btn">📷 Edit cover photo</a>
   {% endif %}
